@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { DeploySpaToAwsStack } from '../lib/deploy-spa-to-aws-stack';
+import { DeploySpaToAwsStack } from '../infrastructure/app-stack';
 
 const app = new cdk.App();
 new DeploySpaToAwsStack(app, 'DeploySpaToAwsStack', {

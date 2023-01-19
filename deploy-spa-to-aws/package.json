@@ -2,7 +2,7 @@
   "name": "deploy-spa-to-aws",
   "version": "0.1.0",
   "bin": {
-    "deploy-spa-to-aws": "bin/deploy-spa-to-aws.js"
+    "cdk-starter": "bin/cdk-starter.js"
   },
   "scripts": {
     "build": "tsc",
