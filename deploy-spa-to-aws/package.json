@@ -5,10 +5,8 @@
     "cdk-starter": "bin/cdk-starter.js"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk-watch": "cdk watch --hotswap --logs --profile hahuaz-root"
   },
   "devDependencies": {
     "@types/jest": "^29.2.5",
