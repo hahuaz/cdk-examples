@@ -5,7 +5,7 @@ import { aws_s3 } from 'aws-cdk-lib';
 import { StorageConstructProps } from '../app-stack';
 
 export class StorageConstruct extends Construct {
-  public readonly objectLambdaBucket: aws_s3.Bucket;
+  public readonly mybucket: aws_s3.Bucket;
 
   constructor(scope: Construct, id: string, props: StorageConstructProps) {
     super(scope, id);
@@ -16,7 +16,7 @@ export class StorageConstruct extends Construct {
     //   this.node.tryGetContext(BRANCH);
 
     // BUCKETS
-    this.objectLambdaBucket = new aws_s3.Bucket(this, 'objectLambdaBucket', {
+    this.mybucket = new aws_s3.Bucket(this, 'mybucket', {
       publicReadAccess: true,
       blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ACLS,
       accessControl: aws_s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,

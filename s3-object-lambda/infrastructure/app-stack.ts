@@ -13,7 +13,7 @@ export default class AppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const { objectLambdaBucket } = new StorageConstruct(
+    const { mybucket } = new StorageConstruct(
       this,
       'storage',
       {} as StorageConstructProps
@@ -43,7 +43,7 @@ export default class AppStack extends cdk.Stack {
 
     // Create S3 access point
     const s3AccessPoint = new aws_s3.CfnAccessPoint(this, 's3AccessPoint', {
-      bucket: objectLambdaBucket.bucketName,
+      bucket: mybucket.bucketName,
     });
 
     // Associate s3 access point with lambda
