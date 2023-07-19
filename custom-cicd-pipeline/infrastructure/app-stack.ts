@@ -102,25 +102,16 @@ export default class AppStack extends cdk.Stack {
         }),
         userData: ec2.UserData.custom(`
         #!/bin/bash
-        sudo su
-        whoami
         echo "Hello, World!" >> /var/log/mylog.txt
-        cd /
 
-        # Install CodeDeploy agent
-        sudo yum update
-        sudo yum install -y ruby
-        sudo yum install -y wget
-        wget -P . https://aws-codedeploy-us-east-2.s3.us-east-2.amazonaws.com/latest/install
-        chmod +x ./install
-        sudo ./install auto
-        sudo service codedeploy-agent status
+        sudo su
+        export HOME=/root
+        whoami
+        cd /root
         
         # Install Node.js
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash 
-        # .nvm will be available in the /root directory
-        /root/.nvm/nvm.sh
-
+        /root/.nvm/nvm.sh # .nvm will be available inside the $HOME directory
         # configure to use nvm right away:
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -128,13 +119,10 @@ export default class AppStack extends cdk.Stack {
         nvm install 16
         node -v
 
-        # Download build artifact
-        mkdir -p ./${CODECOMMIT_REPO_NAME}
-        aws s3 sync s3://${nextBuildBucket.bucketName} ./${CODECOMMIT_REPO_NAME}
-
-        # start the server
-        cd ./${CODECOMMIT_REPO_NAME}
-        npm install
+        # start the app
+        cd /
+        ls
+        cd /next-app
         npm run start -- -p 80
         
         `),
@@ -168,6 +156,7 @@ export default class AppStack extends cdk.Stack {
               'echo "Hello, CodeBuild!"',
               'ls',
               'node --version',
+              'cd /frontend',
               'npm install',
             ],
           },
@@ -181,7 +170,7 @@ export default class AppStack extends cdk.Stack {
           },
         },
         artifacts: {
-          files: ['.next/*'],
+          files: ['/frontend/**/*'],
         },
       }),
     });
@@ -203,10 +192,10 @@ export default class AppStack extends cdk.Stack {
           ],
         }),
         deploymentConfig: codedeploy.ServerDeploymentConfig.ALL_AT_ONCE,
-        autoScalingGroups: [autoScalingGroup],
         ec2InstanceTags: new codedeploy.InstanceTagSet({
           app: ['next-app'],
         }),
+        autoScalingGroups: [autoScalingGroup],
         installAgent: true,
       }
     );
