@@ -1,0 +1,16 @@
+version: 0.0
+os: linux
+files:
+  - source: /frontend
+    destination: /frontend
+  - source: /.next
+    destination: /frontend
+hooks:
+  BeforeInstall:
+    - location: cicd-scripts/before-install.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: cicd-scripts/start-server.sh
+      timeout: 300
+      runas: root

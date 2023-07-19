@@ -25,7 +25,7 @@ export default class AppStack extends cdk.Stack {
     //   throw new Error('There is at least one environment variable undefined!');
     // }
 
-    const CODECOMMIT_REPO_NAME = 'next-app';
+    const CODECOMMIT_REPO_NAME = 'custom-cicd-pipeline';
 
     const nextBuildBucket = new cdk.aws_s3.Bucket(this, 'nextBuildBucket', {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -102,29 +102,7 @@ export default class AppStack extends cdk.Stack {
         }),
         userData: ec2.UserData.custom(`
         #!/bin/bash
-        echo "Hello, World!" >> /var/log/mylog.txt
-
-        sudo su
-        export HOME=/root
-        whoami
-        cd /root
-        
-        # Install Node.js
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash 
-        /root/.nvm/nvm.sh # .nvm will be available inside the $HOME directory
-        # configure to use nvm right away:
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-        [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-        nvm install 16
-        node -v
-
-        # start the app
-        cd /
-        ls
-        cd /next-app
-        npm run start -- -p 80
-        
+        echo "Hello, World!" >> /var/log/mylog.txt        
         `),
       }
     );
@@ -143,36 +121,7 @@ export default class AppStack extends cdk.Stack {
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         privileged: true,
       },
-      buildSpec: codebuild.BuildSpec.fromObject({
-        version: '0.2',
-        phases: {
-          install: {
-            'runtime-versions': {
-              nodejs: 18,
-            },
-          },
-          pre_build: {
-            commands: [
-              'echo "Hello, CodeBuild!"',
-              'ls',
-              'node --version',
-              'cd /frontend',
-              'npm install',
-            ],
-          },
-          build: {
-            commands: ['npm run build'],
-          },
-          post_build: {
-            commands: [
-              `aws s3 sync "." s3://${nextBuildBucket.bucketName} --delete --exclude "node_modules/*"`,
-            ],
-          },
-        },
-        artifacts: {
-          files: ['/frontend/**/*'],
-        },
-      }),
+      buildSpec: codebuild.BuildSpec.fromAsset('buildspec.yml'),
     });
 
     const codeDeploymentGroup = new codedeploy.ServerDeploymentGroup(
