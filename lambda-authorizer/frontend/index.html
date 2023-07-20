@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p>check the console!</p>
+
+    <script>
+      const api_url =
+        'https://a5imcmrll0.execute-api.us-west-2.amazonaws.com/prod/';
+
+      async function getData() {
+        const data = await fetch(`${api_url}mysource`, {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer myawesometoken',
+          },
+          body: JSON.stringify({
+            message: 'Can I get what I want?',
+          }),
+        });
+        const json = await data.json();
+        console.log(json);
+      }
+      getData();
+    </script>
+  </body>
+</html>
