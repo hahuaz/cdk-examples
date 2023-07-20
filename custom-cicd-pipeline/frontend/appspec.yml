@@ -1,0 +1,11 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /frontend
+file_exists_behavior: OVERWRITE
+hooks:
+  ApplicationStart:
+    - location: cicd-scripts/start-server.sh
+      timeout: 300
+      runas: root

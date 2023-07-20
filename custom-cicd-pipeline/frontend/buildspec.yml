@@ -13,6 +13,10 @@ phases:
   build:
     commands:
       - npm run build
+  post_build:
+    commands:
+      - rm -r -f node_modules
+      - ls
 artifacts:
   files:
-    - frontend/.next/**/*
+    - frontend/**/*
