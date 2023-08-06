@@ -9,7 +9,7 @@ import { LambdaConstructProps } from "../app-stack";
 export class LambdaConstruct extends Construct {
   public readonly exampleLambda: NodejsFunction;
 
-  constructor(scope: Construct, id: string, props: LambdaConstructProps) {
+  constructor(scope: Construct, id: string, _props: LambdaConstructProps) {
     super(scope, id);
 
     // const { } = props;

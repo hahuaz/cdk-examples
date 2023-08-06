@@ -1,5 +1,4 @@
 import type { AuthenticationResultType } from "@aws-sdk/client-cognito-identity-provider";
-
 import React, { createContext, useContext, useReducer } from "react";
 import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 
@@ -14,20 +13,10 @@ type State = {
   authenticationResult: AuthenticationResultType;
 };
 
+// discriminated union. type prop is discriminant
 type Action =
   | { type: "SET_EMAIL"; payload: string }
   | { type: "SET_AUTHENTICATION_RESULT"; payload: AuthenticationResultType };
-
-type Dispatch = (action: Action) => void;
-
-const AppContext = createContext<
-  | {
-      state: State;
-      dispatch: Dispatch;
-      cognitoProvider: CognitoIdentityProvider;
-    }
-  | undefined
->(undefined);
 
 const initialState: State = {
   apiUrl: "https://e2za4vphd7.execute-api.us-west-2.amazonaws.com/prod",
@@ -46,6 +35,18 @@ function reducer(state: State, action: Action): State {
       return state;
   }
 }
+
+const AppContext = createContext<{
+  state: State;
+  dispatch: (action: Action) => void;
+  cognitoProvider: CognitoIdentityProvider;
+}>({
+  state: initialState,
+  dispatch: () => {
+    console.warn("Dispatch function called with no implementation.");
+  },
+  cognitoProvider,
+});
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
